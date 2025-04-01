@@ -18,7 +18,8 @@ public:
     private:
     glm::vec2 circlePosition;
     float circleRadius;
-    glm::float32 linePositionY;
+    glm::float32 bottomLinePositionY;
+    glm::float32 topLinePositionY;
     bool startMoving;
     float velocity = 9.81f;
 };

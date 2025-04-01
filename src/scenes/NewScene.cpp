@@ -6,7 +6,8 @@
 NewScene::NewScene()
     : circlePosition(0, 5),
       circleRadius(1),
-      linePositionY(0),
+      bottomLinePositionY(0),
+      topLinePositionY(5),
       startMoving(false) {}
 
 NewScene::~NewScene() {}
@@ -19,7 +20,7 @@ void NewScene::OnDisable() {}
 
 void NewScene::Update(float deltaTime) {
    
-    glm::float32 distance = circlePosition.y - linePositionY;
+    glm::float32 distance = circlePosition.y - bottomLinePositionY;
 
     if (startMoving == true) {
     
