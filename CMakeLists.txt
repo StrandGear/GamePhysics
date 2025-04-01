@@ -10,8 +10,11 @@ file(GLOB_RECURSE SCENE_SOURCES CONFIGURE_DEPENDS "src/scenes/**.cpp" "src/scene
 # Create a filter in Visual Studio for all files in the scenes folder.
 source_group("scenes" FILES ${SCENE_SOURCES})
 
+file(GLOB_RECURSE OBJECTS_SOURCES CONFIGURE_DEPENDS "src/objects/**.cpp" "src/objects/**.h")
+source_group("objects" FILES ${OBJECTS_SOURCES})
+
 # All files to be build have to be added here.
-add_executable(${NAME} src/main.cpp ${SCENE_SOURCES})
+add_executable(${NAME} src/main.cpp ${SCENE_SOURCES} ${OBJECTS_SOURCES})
 
 target_include_directories(${NAME} PRIVATE src)
 
