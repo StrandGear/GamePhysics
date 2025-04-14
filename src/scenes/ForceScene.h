@@ -28,6 +28,7 @@ public:
     glm::vec2 acceleration;
     glm::float32 windPower;
     glm::float32 restitution;
+    const glm::float32 epsilon = 0.01f;
     
     enum class ForceType {
         Gravity,

@@ -33,14 +33,29 @@ void ForceScene::Update(float deltaTime) {
    // bouncing from the walls
     if (circleCurrPosition.y - circleRadius <= -yScreenPos ||
         circleCurrPosition.y + circleRadius >= yScreenPos) {
-        //velocity.y *= -1.0f;
         velocity.y *= -restitution; // assume we are loosing 20% of the velocity
     }
     if (circleCurrPosition.x - circleRadius <= -xScreenPos ||
         circleCurrPosition.x + circleRadius >= xScreenPos) {
         velocity.x *= -restitution;
     }
-   
+
+    //stop if outside of borders but doesnt rly work
+    bool isOnGround = circleCurrPosition.y - circleRadius <= -yScreenPos;
+    bool isOnWall = circleCurrPosition.x - circleRadius <= -xScreenPos ||
+                    circleCurrPosition.x + circleRadius >= xScreenPos;
+
+    if (isOnGround && std::abs(velocity.y) < epsilon) {
+        velocity.y = 0.0f;
+        acceleration.y = 0.0f;
+        totalForce.y = 0.0f;
+    }
+
+    if (isOnWall && std::abs(velocity.x) < epsilon) {
+        velocity.x = 0.0f;
+        acceleration.x = 0.0f;
+        totalForce.x = 0.0f;
+    }
 }
 
 void ForceScene::Draw() {
