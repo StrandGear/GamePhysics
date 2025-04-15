@@ -22,4 +22,9 @@ public:
     glm::float32 topLinePositionY;
     bool startMoving;
     float velocity = 9.81f;
+    float distanceToLine;
+    float projectedDistance;
+    glm::vec2 normalVecOfLine;
+
+    glm::vec2 GetNormalOnLine(glm::vec2 startPos, glm::vec2 endPos);
 };
