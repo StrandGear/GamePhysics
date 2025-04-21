@@ -7,43 +7,47 @@
 NewScene::NewScene()
     : circlePosition(0, 5),
       circleRadius(1),
-      bottomLinePositionY(0),
-      topLinePositionY(5),
+      topLeftCorner(-5,5),
+      bottomRightCorner(5,-5),
       startMoving(false) {}
 
 NewScene::~NewScene() {}
 
 void NewScene::OnEnable() {
     bool buttonPressed = false;
+    angledLine = glm::vec2(3, 1);
+    lineLengthMultiplier = 10.0f;
 
-    // showing the normal of the line
-    normalVecOfLine = GetNormalOnLine(glm::vec2(-5, 0), glm::vec2(5, 0));
+    glm::vec2 startLine = -angledLine * lineLengthMultiplier;
+    glm::vec2 endLine = angledLine * lineLengthMultiplier;
+
+    normalVecOfLine = GetNormalOnLine(startLine, endLine);
 }
 
 void NewScene::OnDisable() {}
 
 void NewScene::Update(float deltaTime) {
    
-    glm::float32 distance = circlePosition.y - bottomLinePositionY;
-
-    // normal from the circle to the line
-    projectedDistance = glm::dot(circlePosition, normalVecOfLine);
-    distanceToLine = projectedDistance - circleRadius;
-
     if (startMoving == true) {
-    
+        
+        //falling down
         circlePosition.y = circlePosition.y - velocity*deltaTime;
 
-        if (distance <= circleRadius) {     
-            //velocity = -9.81;
-        }
-        if (circlePosition.y >= 5) {
-            //velocity = 9.81;
+        // normal from the circle to the line
+        projectedDistance = glm::dot(circlePosition, normalVecOfLine);
+
+        if (projectedDistance < circleRadius) {      
+            //how deep circle after line
+            float intersectionDepth = circleRadius - projectedDistance;
+            circlePosition += normalVecOfLine * intersectionDepth; //moving circle back to surface
+
+            //reflecting velocity
+            glm::vec2 velocityVec = glm::vec2(0, -velocity);
+            glm::vec2 reflectedVec = velocityVec - 2.0f * glm::dot(velocityVec, normalVecOfLine) * normalVecOfLine;
+
+            velocity = -reflectedVec.y;
         }
 
-        if (distanceToLine <= 0) {
-            velocity = -9.81;
-        }
     }
 }
 
@@ -60,11 +64,20 @@ glm::vec2 NewScene::GetNormalOnLine(glm::vec2 startPos, glm::vec2 endPos) {
 
 void NewScene::Draw() {
     Draw::Circle(circlePosition, circleRadius);
-    Draw::Line(glm::vec2(-5, 0), glm::vec2(5, 0));
-   
-    Draw::SetColor(Colors::green);
-    Draw::Line(glm::vec2(0, 0), glm::vec2(0, normalVecOfLine.y));
 
+    //Half space
+    glm::vec2 origin = glm::vec2(0, 0);
+    glm::vec2 direction = glm::normalize(angledLine);
+    glm::vec2 p1 = origin - direction * lineLengthMultiplier;
+    glm::vec2 p2 = origin + direction * lineLengthMultiplier;
+
+    Draw::Line(p1, p2);
+   
+    //normal of the half space line
+    Draw::SetColor(Colors::green);
+    Draw::Line(origin, glm::vec2(0, normalVecOfLine.y));
+
+    //distance from circle to line
     Draw::SetColor(Colors::cyan);
     Draw::Line(
         glm::vec2(circlePosition.x, circlePosition.y),
@@ -75,7 +88,6 @@ void NewScene::DrawGUI() {
     ImGui::Begin("Inspector");
 
     if (ImGui::Button("Drop") == true) {
-        std::cout << "Pressed a btn" << std::endl;
         startMoving = true;
     }
 
