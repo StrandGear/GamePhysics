@@ -56,6 +56,8 @@ void ForceScene::Update(float deltaTime) {
         acceleration.x = 0.0f;
         totalForce.x = 0.0f;
     }
+
+    totalForce = glm::vec2(0.0f, 0.0f);
 }
 
 void ForceScene::Draw() {
