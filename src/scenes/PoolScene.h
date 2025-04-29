@@ -2,6 +2,13 @@
 #include <iostream>
 #include "core/Simple2DScene.h"
 
+struct Ball {
+    glm::vec2 position;
+    glm::vec2 velocity;
+    float radius;
+    float mass;
+};
+
 class PoolScene : public Simple2DScene {
 public:
     PoolScene();
@@ -16,12 +23,10 @@ public:
     virtual const char* GetName() override { return "Pool"; };
 
 private:
-    glm::vec2 ball_1_Position; 
-    glm::vec2 ball_2_Position; 
-    float ballsMass;
-    glm::vec2 ball_1_Velocity;
-    glm::vec2 ball_2_Velocity;
-    float ballsRadius;
+
+    static const int BALL_COUNT = 5;
+    Ball ballsArray[BALL_COUNT];
+
     bool isMoving;
 
     glm::vec2 mouseClickPos;
@@ -29,5 +34,9 @@ private:
     bool hasClicked;
     bool isDragging;
 
+    float damping;
+
     void ApplyImpulse(glm::vec2 impulse);
+
+    glm::vec2 TestCollision(Ball, Ball);
 };
